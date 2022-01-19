@@ -15,7 +15,7 @@ export default function handler(request, response) {
     const token = body.data?.token
 
     // Recharge Checkout GET request
-    const rechargeResponse = await axios.get(rechargeAPI + token,{
+    const rechargeResponse = await axios.get(rechargeAPI + "checkouts/" + token,{
             headers:{
                 'Content-Type':'application/json',
                 'X-Recharge-Access-Token': rechargeAPIToken
@@ -32,7 +32,7 @@ export default function handler(request, response) {
         // Set successful response
         response.status(200).json({checkoutToken:checkoutToken, redirectURL:redirectURL})
     } else {
-        response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
+        response.status(rechargeResponse.status).json({error: "Error sending GET recharge request"})
     }
     
     return []

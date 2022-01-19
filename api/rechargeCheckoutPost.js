@@ -45,7 +45,7 @@ export default function handler(request, response) {
     
 
     // Recharge Checkout POST request
-    const rechargeResponse = await axios.post(rechargeAPI, mappedData, 
+    const rechargeResponse = await axios.post(rechargeAPI + "checkouts", mappedData, 
         {
             headers:{
                 'Content-Type':'application/json',

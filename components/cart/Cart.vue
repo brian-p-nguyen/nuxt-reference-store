@@ -64,43 +64,45 @@ export default {
       let checkoutId = window.localStorage.getItem("checkoutId") || "";
 
       if (checkoutId) {
-        await $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
-          if (checkout.completed) {
-            clearCart();
-            updateCheckoutData(initialCheckoutData);
-          } else {
-            updateCheckoutData(checkout);
-          }
-        });
+        
+        // await $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
+        //   if (checkout.completed) {
+        //     clearCart();
+        //     updateCheckoutData(initialCheckoutData);
+        //   } else {
+        //     updateCheckoutData(checkout);
+        //   }
+        // });
       }
     });
 
     const processCheckout = () => {
-      isCheckingOut.value = true;
-      $shopifyCheckout
-        .process({
-          cartItems: cart.lineItems.map(cartItem => ({
-            quantity: cartItem.quantity,
-            variantId: cartItem.variant.id,
-            metafields: {
-              ...cartItem.product.metafields,
-              ...cartItem.variant.metafields
-            }
-          })),
-          id: checkoutData.id
-        })
-        .then(checkoutData => {
-          updateCheckoutData(checkoutData);
 
-          if (checkoutData.url) {
-            window.location.href = checkoutData.url;
-          }
-        })
-        .catch(err => {
-          isCheckingOut.value = false;
+      // isCheckingOut.value = true;
+      // $shopifyCheckout
+      //   .process({
+      //     cartItems: cart.lineItems.map(cartItem => ({
+      //       quantity: cartItem.quantity,
+      //       variantId: cartItem.variant.id,
+      //       metafields: {
+      //         ...cartItem.product.metafields,
+      //         ...cartItem.variant.metafields
+      //       }
+      //     })),
+      //     id: checkoutData.id
+      //   })
+      //   .then(checkoutData => {
+      //     updateCheckoutData(checkoutData);
 
-          throw new Error(err);
-        });
+      //     if (checkoutData.url) {
+      //       window.location.href = checkoutData.url;
+      //     }
+      //   })
+      //   .catch(err => {
+      //     isCheckingOut.value = false;
+
+      //     throw new Error(err);
+      //   });
     };
 
     watch(cartOpen, value => {
