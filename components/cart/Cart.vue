@@ -64,7 +64,13 @@ export default {
       let checkoutId = window.localStorage.getItem("checkoutId") || "";
 
       if (checkoutId) {
-        
+        const apiResponse = await axios.get("/api/rechargeCheckoutGet" + '?token=' + checkoutId)
+        if (apiResponse.data.status == '200')
+        {
+
+        } else {
+
+        }
         // await $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
         //   if (checkout.completed) {
         //     clearCart();
@@ -77,7 +83,22 @@ export default {
     });
 
     const processCheckout = () => {
+      const body = {
+        cartItems: cart.lineItems.map(cartItem => ({
+            quantity: cartItem.quantity,
+            variantId: cartItem.variant.id,
+            metafields: {
+              ...cartItem.product.metafields,
+              ...cartItem.variant.metafields
+            }
+          }))
+      }
+      const apiResponse = await axios.post("/api/rechargeCheckoutPost", body)
 
+      if(apiResponse.data?.redirectURL)
+      {
+        window.location.href = checkoutData.url;
+      }
       // isCheckingOut.value = true;
       // $shopifyCheckout
       //   .process({

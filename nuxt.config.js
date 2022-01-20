@@ -59,7 +59,8 @@ export default {
     "@nuxtjs/svg",
     "@nuxtjs/composition-api/module",
     "@nuxtjs/pwa",
-    "@nuxtjs/tailwindcss"
+    "@nuxtjs/tailwindcss",
+    '@nuxtjs/axios'
   ],
 
   modules: [],

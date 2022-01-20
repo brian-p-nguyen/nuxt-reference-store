@@ -1,24 +1,5 @@
 import { axios } from 'axios'
 
-const subscriptionKeys = [
-    'shipping_interval_frequency',
-    'shipping_interval_unit_type',
-    'charge_interval_frequency',
-    'charge_interval_unit_type',
-    'first_recurring_charge_delay',
-    'number_charges_until_expiration',
-    'charge_on_day_of_month',
-    'charge_on_day_of_week',
-    'charge_delay',
-    'order_interval_frequency',
-    'order_interval_unit',
-    'cutoff_day_of_month',
-    'cutoff_day_of_week',
-    'expire_after_specific_number_of_charges',
-    'order_day_of_month',
-    'order_day_of_week',
-  ]
-
 export default function handler(request, response) {
     const rechargeAPIToken = process.env.RECHARGE_TOKEN
     const rechargeAPI = process.env.RECHARGE_API
