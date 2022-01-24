@@ -25,7 +25,7 @@ export default function handler(request, response) {
 
         return lineItem
     });
-    
+    console.log("mapped data:" + mappedData)
     // Recharge Checkout POST request
     try {
         console.log(rechargeAPI)
@@ -37,14 +37,14 @@ export default function handler(request, response) {
             }
         })
 
-        if (rechargeResponse.data)
+        if (rechargeResponse)
         {
             // Process Results
             const checkoutToken = rechargeResponse?.data?.checkout?.token   // unique recharge checkout token
             const redirectURL = generateUrl(checkoutToken)
 
             // Set successful response
-            response.status(200).json({checkoutToken:checkoutToken, redirectURL:redirectURL})
+            response.status(200).json({'checkoutToken':checkoutToken, 'redirectURL':redirectURL})
         }
     } catch (error) {
         console.error(error);
