@@ -26,6 +26,7 @@ import {
 import { useCartProvider } from "@nacelle/vue";
 import CartOverlay from "./CartOverlay.vue";
 import CartDrawer from "./CartDrawer.vue";
+import axios from "axios";
 
 export default {
   name: "Cart",
@@ -64,7 +65,7 @@ export default {
       let checkoutId = window.localStorage.getItem("checkoutId") || "";
 
       if (checkoutId) {
-        const apiResponse = await axios.get("/api/rechargeCheckoutGet" + '?token=' + checkoutId)
+        const apiResponse = axios.get("/api/rechargeCheckoutGet" + '?token=' + checkoutId)
         if (apiResponse.data.status == '200')
         {
 
@@ -93,11 +94,13 @@ export default {
             }
           }))
       }
-      const apiResponse = await axios.post("/api/rechargeCheckoutPost", body)
+      const apiResponse = axios.post("/api/rechargeCheckoutPost", body)
 
       if(apiResponse.data?.redirectURL)
       {
         window.location.href = checkoutData.url;
+      } else {
+        console.log("error posting to checkout");
       }
       // isCheckingOut.value = true;
       // $shopifyCheckout

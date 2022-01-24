@@ -15,7 +15,7 @@ export default function handler(request, response) {
     const token = body.data?.token
 
     // Recharge Checkout GET request
-    const rechargeResponse = await axios.get(rechargeAPI + "checkouts/" + token,{
+    const rechargeResponse = axios.get(rechargeAPI + "checkouts/" + token,{
             headers:{
                 'Content-Type':'application/json',
                 'X-Recharge-Access-Token': rechargeAPIToken

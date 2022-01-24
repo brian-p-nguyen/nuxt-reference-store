@@ -26,13 +26,14 @@ export default function handler(request, response) {
     
 
     // Recharge Checkout POST request
-    const rechargeResponse = await axios.post(rechargeAPI + "checkouts", mappedData, 
+    const rechargeResponse = axios.post(rechargeAPI + "checkouts", mappedData, 
         {
             headers:{
                 'Content-Type':'application/json',
                 'X-Recharge-Access-Token': rechargeAPIToken
             }
         })
+    }
 
     if (rechargeResponse.status == '200' && rechargeResponse.data)
     {
@@ -46,6 +47,7 @@ export default function handler(request, response) {
         response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
     }
 }
+
 
 function generateUrl (token){
     const rechargeBaseCheckoutURL = process.env.RECHARGE_CHECKOUT_BASE_URL
