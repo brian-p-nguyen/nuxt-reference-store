@@ -13,6 +13,8 @@ export default function handler(request, response) {
     }
 
     // Map Checkout Items
+    console.log("mapping checkout items")
+    console.log(body)
     const mappedData = body.cartItems.map((item) => {
         const lineItem = {
             // Decode Shopify's variantID
@@ -57,6 +59,7 @@ function generateUrl (token){
 }
 
 function decodeBase64ProductVariantId(encodedId) {
+    console.log(encodedId)
     const decodedId = Buffer.from(encodedId, 'base64').toString('ascii')
     return decodedId.split('gid://shopify/ProductVariant/')[1]
 }
