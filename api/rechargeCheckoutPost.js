@@ -26,7 +26,8 @@ export default function handler(request, response) {
     
     // Recharge Checkout POST request
     try {
-        const rechargeResponse = axios.post(rechargeAPI + "checkouts", {line_items: mappedData}, 
+        console.log(rechargeAPI)
+        const rechargeResponse = axios.post(rechargeAPI + "checkouts", {'line_items': mappedData}, 
         {
             headers:{
                 'Content-Type':'application/json',
