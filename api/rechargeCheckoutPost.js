@@ -18,7 +18,7 @@ export default function handler(request, response) {
     const mappedData = body.cartItems.map((item) => {
         const lineItem = {
             // Decode Shopify's variantID
-            'external_variant_id': decodeBase64ProductVariantId(item.variantId),
+            'external_variant_id': {"ecommerce": decodeBase64ProductVariantId(item.variantId)},
             'quantity': item.quantity,
             'properties': {}
         }
@@ -29,11 +29,12 @@ export default function handler(request, response) {
     // Recharge Checkout POST request
     try {
         console.log(rechargeAPI)
-        const rechargeResponse = axios.post(rechargeAPI + "checkouts", {'line_items': mappedData}, 
+        const rechargeResponse = axios.post(rechargeAPI + "checkouts", {"line_items": [mappedData]}, 
         {
             headers:{
                 'Content-Type':'application/json',
-                'X-Recharge-Access-Token': rechargeAPIToken
+                'X-Recharge-Access-Token': rechargeAPIToken,
+                'X-Recharge-Version': '2021-11'
             }
         })
 
