@@ -16,7 +16,7 @@ export default function handler(request, response) {
     const mappedData = body.cartItems.map((item) => {
         const lineItem = {
             // Decode Shopify's variantID
-            'variantID': decodeBase64ProductVariantId(item.variantId),
+            'external_variant_id': decodeBase64ProductVariantId(item.variantId),
             'quantity': item.quantity,
             'properties': {}
         }
@@ -24,9 +24,9 @@ export default function handler(request, response) {
         return lineItem
     });
     
-
     // Recharge Checkout POST request
-    const rechargeResponse = axios.post(rechargeAPI + "checkouts", mappedData, 
+    try {
+        const rechargeResponse = axios.post(rechargeAPI + "checkouts", {line_items: mappedData}, 
         {
             headers:{
                 'Content-Type':'application/json',
@@ -34,15 +34,17 @@ export default function handler(request, response) {
             }
         })
 
-    if (rechargeResponse.status == '200' && rechargeResponse.data)
-    {
-        // Process Results
-        const checkoutToken = rechargeResponse?.data?.checkout?.token   // unique recharge checkout token
-        const redirectURL = generateUrl(checkoutToken)
+        if (rechargeResponse.data)
+        {
+            // Process Results
+            const checkoutToken = rechargeResponse?.data?.checkout?.token   // unique recharge checkout token
+            const redirectURL = generateUrl(checkoutToken)
 
-        // Set successful response
-        response.status(200).json({checkoutToken:checkoutToken, redirectURL:redirectURL})
-    } else {
+            // Set successful response
+            response.status(200).json({checkoutToken:checkoutToken, redirectURL:redirectURL})
+        }
+    } catch (error) {
+        console.error(error);
         response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
     }
 }
