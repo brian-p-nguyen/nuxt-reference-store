@@ -85,7 +85,8 @@ export default {
         //     updateCheckoutData(checkout);
         //   }
         // });
-    };
+      }
+    });
 
     const processCheckout = () => {
       const body = {
