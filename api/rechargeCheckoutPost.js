@@ -3,7 +3,7 @@ import { axios } from 'axios'
 export default function handler(request, response) {
     const rechargeAPIToken = process.env.RECHARGE_TOKEN
     const rechargeAPI = process.env.RECHARGE_API
-    let body
+    let body, rechargeResponse
 
     // Obtain request body for processing
     try{
@@ -18,18 +18,18 @@ export default function handler(request, response) {
     const mappedData = body.cartItems.map((item) => {
         const lineItem = {
             // Decode Shopify's variantID
-            'external_variant_id': {"ecommerce": decodeBase64ProductVariantId(item.variantId)},
-            'quantity': item.quantity,
-            'properties': {}
+            external_variant_id: {"ecommerce": decodeBase64ProductVariantId(item.variantId)},
+            quantity: item.quantity,
         }
 
         return lineItem
     });
-    console.log("mapped data:" + mappedData)
+
     // Recharge Checkout POST request
     try {
-        console.log(rechargeAPI)
-        const rechargeResponse = axios.post(rechargeAPI + "checkouts", {"line_items": [mappedData]}, 
+        console.log("making post request")
+
+        rechargeResponse = axios.post(rechargeAPI + "checkouts", {"line_items": [...mappedData]}, 
         {
             headers:{
                 'Content-Type':'application/json',
@@ -49,7 +49,12 @@ export default function handler(request, response) {
         }
     } catch (error) {
         console.error(error);
-        response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
+
+        if (rechargeResponse) {
+            response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
+        } else {
+            response.status(500).json({error: "Error sending POST recharge request"})
+        }
     }
 }
 
