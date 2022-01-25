@@ -96,6 +96,10 @@ export default {
       }
       const apiResponse = axios.post("/api/rechargeCheckoutPost", body).then(function (response) {
         console.log(response.data)
+        if (response.data.redirectURL)
+        {
+          window.location.href = response.data.url;
+        }
       }).catch(function (error) {
         console.log(apiResponse.status)
         console.log("error posting to checkout");
