@@ -1,7 +1,7 @@
 export default function handler(request, response) {
     const rechargeAPIToken = process.env.RECHARGE_TOKEN
     const rechargeAPI = process.env.RECHARGE_API
-    let body, rechargeResponse
+    let body
 
     // Obtain request body for processing
     try{
@@ -20,7 +20,7 @@ export default function handler(request, response) {
             quantity: item.quantity,
         }
 
-        return JSON.stringify(lineItem)
+        return lineItem
     });
 
     // Recharge Checkout POST request
@@ -52,11 +52,7 @@ export default function handler(request, response) {
         response.status(200).json({'checkoutToken':checkoutToken, 'redirectURL':redirectURL})
     }).catch(function (error) {
         console.log(error);
-
-        if (rechargeResponse) {
-            response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
-        } 
-    })
+    });
 }
 
 function generateUrl (token){
