@@ -1,5 +1,3 @@
-import { axios } from 'axios'
-
 export default function handler(request, response) {
     const rechargeAPIToken = process.env.RECHARGE_TOKEN
     const rechargeAPI = process.env.RECHARGE_API
@@ -15,27 +13,29 @@ export default function handler(request, response) {
     const token = body.data?.token
 
     // Recharge Checkout GET request
-    const rechargeResponse = axios.get(rechargeAPI + "checkouts/" + token,{
-            headers:{
-                'Content-Type':'application/json',
-                'X-Recharge-Access-Token': rechargeAPIToken
-            }
-        })
+    console.log("Making post request")
 
-    // Process response
-    if (rechargeResponse.status == '200' && rechargeResponse.data)
-    {
+    const axios = require('axios');
+    const options = {
+        method: 'GET',
+        url: 'https://api.rechargeapps.com/checkouts/' + token,
+        headers: {
+            'X-Recharge-Access-Token': rechargeAPIToken,
+            'X-Recharge-Version': '2021-11'
+        }
+    };
+    axios.request(options).then(function (rechargeResponse) {
+        console.log(rechargeResponse.data);
+        
         // Process Results
-        const checkoutToken = rechargeResponse.data?.checkout?.token   // unique recharge checkout token
+        const checkoutToken = rechargeResponse?.data?.checkout?.token   // unique recharge checkout token
         const redirectURL = generateUrl(checkoutToken)
 
         // Set successful response
-        response.status(200).json({checkoutToken:checkoutToken, redirectURL:redirectURL})
-    } else {
-        response.status(rechargeResponse.status).json({error: "Error sending GET recharge request"})
-    }
-    
-    return []
+        response.status(200).json({'redirectURL':redirectURL, 'id':checkoutToken, 'checkout':rechargeResponse.data.checkout})
+    }).catch(function (error) {
+        console.log(error);
+    });
 }
 
 function generateUrl (token){

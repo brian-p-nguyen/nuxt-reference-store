@@ -65,13 +65,18 @@ export default {
       let checkoutId = window.localStorage.getItem("checkoutId") || "";
 
       if (checkoutId) {
-        const apiResponse = axios.get("/api/rechargeCheckoutGet" + '?token=' + checkoutId)
-        if (apiResponse.data.status == '200')
-        {
-
-        } else {
-
-        }
+        const apiResponse = axios.get("/api/rechargeCheckoutGet" + '?token=' + checkoutId).then(function (response) {
+          if(response.checkout.completed_at)
+          {
+            clearCart();
+            updateCheckoutData(initialCheckoutData);            
+          } else {
+            updateCheckoutData(checkout);
+          }
+        }).catch(function (error){
+            updateCheckoutData(initialCheckoutData);  
+        })
+        
         // await $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
         //   if (checkout.completed) {
         //     clearCart();
@@ -80,8 +85,7 @@ export default {
         //     updateCheckoutData(checkout);
         //   }
         // });
-      }
-    });
+    };
 
     const processCheckout = () => {
       const body = {

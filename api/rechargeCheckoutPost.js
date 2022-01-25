@@ -27,7 +27,6 @@ export default function handler(request, response) {
     console.log("making post request")
 
     const axios = require('axios');
-
     const options = {
         method: 'POST',
         url: 'https://api.rechargeapps.com/checkouts',
