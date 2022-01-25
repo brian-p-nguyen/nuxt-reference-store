@@ -19,14 +19,14 @@ export default function handler(request, response) {
             external_variant_id: {"ecommerce": decodeBase64ProductVariantId(item.variantId)},
             quantity: item.quantity,
         }
-
-        return lineItem
+        
+        return JSON.stringify(lineItem)
     });
 
     // Recharge Checkout POST request
     try {
         console.log("making post request")
-        
+
         const axios = require('axios');
         rechargeResponse = axios.post(rechargeAPI + "checkouts", {"line_items": [...mappedData]}, 
         {

@@ -100,6 +100,7 @@ export default {
       {
         window.location.href = checkoutData.url;
       } else {
+        console.log(apiResponse.status)
         console.log("error posting to checkout");
       }
       // isCheckingOut.value = true;
