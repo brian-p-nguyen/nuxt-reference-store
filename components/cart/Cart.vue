@@ -98,7 +98,7 @@ export default {
         console.log(response.data)
         if (response.data.redirectURL)
         {
-          window.location.href = response.data.url;
+          window.location.href = response.data.redirectURL;
         }
       }).catch(function (error) {
         console.log(apiResponse.status)
