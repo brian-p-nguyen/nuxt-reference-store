@@ -1,5 +1,3 @@
-import { axios } from 'axios'
-
 export default function handler(request, response) {
     const rechargeAPIToken = process.env.RECHARGE_TOKEN
     const rechargeAPI = process.env.RECHARGE_API
@@ -28,7 +26,8 @@ export default function handler(request, response) {
     // Recharge Checkout POST request
     try {
         console.log("making post request")
-
+        
+        const axios = require('axios');
         rechargeResponse = axios.post(rechargeAPI + "checkouts", {"line_items": [...mappedData]}, 
         {
             headers:{
@@ -52,9 +51,7 @@ export default function handler(request, response) {
 
         if (rechargeResponse) {
             response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
-        } else {
-            response.status(500).json({error: "Error sending POST recharge request"})
-        }
+        } 
     }
 }
 
