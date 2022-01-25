@@ -48,6 +48,8 @@ export default function handler(request, response) {
         const checkoutToken = rechargeResponse?.data?.checkout?.token   // unique recharge checkout token
         const redirectURL = generateUrl(checkoutToken)
 
+        console.log(redirectURL)
+
         // Set successful response
         response.status(200).json({'checkoutToken':checkoutToken, 'redirectURL':redirectURL})
     }).catch(function (error) {
