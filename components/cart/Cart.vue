@@ -94,16 +94,13 @@ export default {
             }
           }))
       }
-      const apiResponse = axios.post("/api/rechargeCheckoutPost", body)
-
-      if(apiResponse.data)
-      {
-        console.log(apiResponse.data)
-        //window.location.href = checkoutData.url;
-      } else {
+      const apiResponse = axios.post("/api/rechargeCheckoutPost", body).then(function (response) {
+        console.log(response.data)
+      }).catch(function (error) {
         console.log(apiResponse.status)
         console.log("error posting to checkout");
-      }
+      })
+
       // isCheckingOut.value = true;
       // $shopifyCheckout
       //   .process({
