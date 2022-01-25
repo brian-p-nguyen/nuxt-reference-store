@@ -19,40 +19,44 @@ export default function handler(request, response) {
             external_variant_id: {"ecommerce": decodeBase64ProductVariantId(item.variantId)},
             quantity: item.quantity,
         }
-        
+
         return JSON.stringify(lineItem)
     });
 
     // Recharge Checkout POST request
-    try {
-        console.log("making post request")
+    console.log("making post request")
 
-        const axios = require('axios');
-        rechargeResponse = axios.post(rechargeAPI + "checkouts", {"line_items": [...mappedData]}, 
-        {
-            headers:{
-                'Content-Type':'application/json',
-                'X-Recharge-Access-Token': rechargeAPIToken,
-                'X-Recharge-Version': '2021-11'
-            }
-        })
+    const axios = require('axios');
 
-        if (rechargeResponse)
-        {
-            // Process Results
-            const checkoutToken = rechargeResponse?.data?.checkout?.token   // unique recharge checkout token
-            const redirectURL = generateUrl(checkoutToken)
-
-            // Set successful response
-            response.status(200).json({'checkoutToken':checkoutToken, 'redirectURL':redirectURL})
+    const options = {
+        method: 'POST',
+        url: 'https://api.rechargeapps.com/checkouts',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Recharge-Access-Token': rechargeAPIToken,
+            'X-Recharge-Version': '2021-11'
+        },
+        data: {
+            line_items: [...mappedData]
         }
-    } catch (error) {
-        console.error(error);
+    };
+        
+    axios.request(options).then(function (rechargeResponse) {
+        console.log(rechargeResponse.data);
+        
+        // Process Results
+        const checkoutToken = rechargeResponse?.data?.checkout?.token   // unique recharge checkout token
+        const redirectURL = generateUrl(checkoutToken)
+
+        // Set successful response
+        response.status(200).json({'checkoutToken':checkoutToken, 'redirectURL':redirectURL})
+    }).catch(function (error) {
+        console.log(error);
 
         if (rechargeResponse) {
             response.status(rechargeResponse.status).json({error: "Error sending POST recharge request"})
         } 
-    }
+    })
 }
 
 function generateUrl (token){
@@ -64,5 +68,7 @@ function generateUrl (token){
 function decodeBase64ProductVariantId(encodedId) {
     console.log(encodedId)
     const decodedId = Buffer.from(encodedId, 'base64').toString('ascii')
-    return decodedId.split('gid://shopify/ProductVariant/')[1]
+    const decodedID = decodedId.split('gid://shopify/ProductVariant/')[1]
+    console.log(decodedID)
+    return decodedID
 }
