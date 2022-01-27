@@ -94,18 +94,18 @@ export default {
     
       for(const lineItem of cart.lineItems) {
         if (lineItem.product.metafields){
-          lineItem.product.metafields.forEach((key) => {
-            console.log(key)
-            if (key && (key == 'charge_interval_frequency' || key == 'order_interval_frequency' || key == 'order_interval_unit')) {
+          lineItem.product.metafields.forEach((metafield) => {
+            console.log(metafield.key)
+            if (metafield.key && (metafield.key == 'charge_interval_frequency' || metafield.key == 'order_interval_frequency' || metafield.key == 'order_interval_unit')) {
               isRecharge=true
             }
           })
         }
 
         if (lineItem.variant.metafields){
-          lineItem.variant.metafields.forEach((key) => {
-            console.log(key)
-            if (key && (key == 'charge_interval_frequency' || key == 'order_interval_frequency' || key == 'order_interval_unit')) {
+          lineItem.variant.metafields.forEach((metafield) => {
+            console.log(metafield)
+            if (metafield.key && (metafield.key == 'charge_interval_frequency' || metafield.key == 'order_interval_frequency' || metafield.key == 'order_interval_unit')) {
               isRecharge=true
             }
           })
