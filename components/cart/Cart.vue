@@ -89,52 +89,81 @@ export default {
     });
 
     const processCheckout = () => {
-      const body = {
-        cartItems: cart.lineItems.map(cartItem => ({
-            quantity: cartItem.quantity,
-            variantId: cartItem.variant.id,
-            metafields: {
-              ...cartItem.product.metafields,
-              ...cartItem.variant.metafields
+      let isRecharge
+      isCheckingOut.value = true;
+    
+      for(const lineItem of cart.lineItems) {
+        if (lineItem.product.metafields){
+          lineItem.product.metafields.forEach((key) => {
+            console.log(key)
+            if (key && (key == 'charge_interval_frequency' || key == 'order_interval_frequency' || key == 'order_interval_unit')) {
+              isRecharge=true
             }
-          }))
-      }
-      const apiResponse = axios.post("/api/rechargeCheckoutPost", body).then(function (response) {
-        console.log(response.data)
-        if (response.data.redirectURL)
-        {
-          window.location.href = response.data.redirectURL;
+          })
         }
-      }).catch(function (error) {
-        console.log(apiResponse.status)
-        console.log("error posting to checkout");
-      })
 
-      // isCheckingOut.value = true;
-      // $shopifyCheckout
-      //   .process({
-      //     cartItems: cart.lineItems.map(cartItem => ({
-      //       quantity: cartItem.quantity,
-      //       variantId: cartItem.variant.id,
-      //       metafields: {
-      //         ...cartItem.product.metafields,
-      //         ...cartItem.variant.metafields
-      //       }
-      //     })),
-      //     id: checkoutData.id
-      //   })
-      //   .then(checkoutData => {
-      //     updateCheckoutData(checkoutData);
+        if (lineItem.variant.metafields){
+          lineItem.variant.metafields.forEach((key) => {
+            console.log(key)
+            if (key && (key == 'charge_interval_frequency' || key == 'order_interval_frequency' || key == 'order_interval_unit')) {
+              isRecharge=true
+            }
+          })
+        }
+      }
 
-      //     if (checkoutData.url) {
-      //       window.location.href = checkoutData.url;
-      //     }
-      //   })
-      //   .catch(err => {
-      //     isCheckingOut.value = false;
+      if (isRecharge){
+        const body = {
+          cartItems: cart.lineItems.map(cartItem => ({
+              quantity: cartItem.quantity,
+              variantId: cartItem.variant.id,
+              metafields: {
+                ...cartItem.product.metafields,
+                ...cartItem.variant.metafields
+              }
+            }))
+        }
 
-      //     throw new Error(err);
-      //   });
+        const apiResponse = axios.post("/api/rechargeCheckoutPost", body)
+        .then(function (response) {
+          console.log(response.data)
+          if (response.data.redirectURL)
+          {
+            window.location.href = response.data.redirectURL;
+          }
+        }).catch(err => {
+          console.log(apiResponse.status)
+          console.log("error posting to checkout");
+          isCheckingOut.value = false;
+
+          throw new Error(err);
+        })
+      } else {
+        $shopifyCheckout
+          .process({
+            cartItems: cart.lineItems.map(cartItem => ({
+              quantity: cartItem.quantity,
+              variantId: cartItem.variant.id,
+              metafields: {
+                ...cartItem.product.metafields,
+                ...cartItem.variant.metafields
+              }
+            })),
+            id: checkoutData.id
+          })
+          .then(checkoutData => {
+            updateCheckoutData(checkoutData);
+
+            if (checkoutData.url) {
+              window.location.href = checkoutData.url;
+            }
+          })
+          .catch(err => {
+            isCheckingOut.value = false;
+
+            throw new Error(err);
+          });        
+      }
     };
 
     watch(cartOpen, value => {
