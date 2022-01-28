@@ -66,25 +66,26 @@ export default {
 
       if (checkoutId) {
         const apiResponse = axios.get("/api/rechargeCheckoutGet" + '?token=' + checkoutId).then(function (response) {
-          if(response.checkout.completed_at)
+          if(response.data.checkout && response.data.checkout?.completed_at)
           {
             clearCart();
             updateCheckoutData(initialCheckoutData);            
           } else {
-            updateCheckoutData(checkout);
+            updateCheckoutData(response.data.checkout);
           }
         }).catch(function (error){
+          await $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
+            if (checkout.completed) {
+              clearCart();
+              updateCheckoutData(initialCheckoutData);
+            } else {
+              updateCheckoutData(checkout);
+            }
+          }).catch(error => {
+            console.log(error);
             updateCheckoutData(initialCheckoutData);  
+          })
         })
-        
-        // await $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
-        //   if (checkout.completed) {
-        //     clearCart();
-        //     updateCheckoutData(initialCheckoutData);
-        //   } else {
-        //     updateCheckoutData(checkout);
-        //   }
-        // });
       }
     });
 
@@ -102,14 +103,14 @@ export default {
           })
         }
 
-        if (lineItem.variant.metafields){
-          lineItem.variant.metafields.forEach((metafield) => {
-            console.log(metafield)
-            if (metafield.key && (metafield.key == 'charge_interval_frequency' || metafield.key == 'order_interval_frequency' || metafield.key == 'order_interval_unit')) {
-              isRecharge=true
-            }
-          })
-        }
+          if (!isRecharge && lineItem.variant.metafields){
+            lineItem.variant.metafields.forEach((metafield) => {
+              console.log(metafield.key)
+              if (metafield.key && (metafield.key == 'charge_interval_frequency' || metafield.key == 'order_interval_frequency' || metafield.key == 'order_interval_unit')) {
+                isRecharge=true
+              }
+            })
+          }
       }
 
       if (isRecharge){
