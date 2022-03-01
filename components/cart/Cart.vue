@@ -74,7 +74,7 @@ export default {
             updateCheckoutData(response.data.checkout);
           }
         }).catch(function (error){
-          await $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
+          $shopifyCheckout.get({ id: checkoutId }).then(checkout => {
             if (checkout.completed) {
               clearCart();
               updateCheckoutData(initialCheckoutData);
